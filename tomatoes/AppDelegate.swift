@@ -69,7 +69,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-        window?.contentView = NSHostingView(rootView: ContentView())
+        window?.contentView = NSHostingView(rootView: ContentView(timerLogic: TimerLogic()))
         window?.isReleasedWhenClosed = false
         window?.collectionBehavior = .canJoinAllSpaces
         window?.level = .floating
