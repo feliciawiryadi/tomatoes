@@ -8,9 +8,10 @@
 import AppKit
 import SwiftUI
 import Cocoa
+import UserNotifications
 
-final class AppDelegate: NSObject, NSApplicationDelegate {
-//    previously also NSWindowDelegate 
+final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
+    
     var statusBarItem: NSStatusItem?
     var window: NSWindow?
 
@@ -21,8 +22,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             button.target = self
             button.image = NSImage(named: NSImage.Name("timelapse"))!
         }
-        let notificationManager = NotificationManager()
-        notificationManager.requestAuthorisationForNotifications()
+        
+        UNUserNotificationCenter.current().delegate = self
+        NotificationManager().requestAuthorisationForNotifications()
+        
+    }
+    
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.sound, .banner])
     }
     
     @objc func statusBarButtonClicked(_ sender: NSStatusBarButton) {

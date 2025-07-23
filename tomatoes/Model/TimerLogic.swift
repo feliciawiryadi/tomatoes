@@ -24,6 +24,7 @@ final class TimerLogic: ObservableObject {
     
     private var endDate: Date?
     private var timerConnector: AnyCancellable?
+    private var notificationManager = NotificationManager()
     
     private var timerFinishedSubject = PassthroughSubject<Void, Never>()
     var timerFinished: AnyPublisher<Void, Never> {
@@ -35,11 +36,21 @@ final class TimerLogic: ObservableObject {
         endDate = Date().addingTimeInterval(duration)
         connectTimer()
         state = .running
+        Task {
+            await notificationManager.scheduleNotification(time: endDate!)
+        }
+        
     }
     
     func stop(reset: Bool = false) {
         if state == .running {
             disconnectTimer()
+            Task {
+                await notificationManager.currentCenter.pendingNotificationRequests().forEach { request in
+                    print("request found: \(request)")
+                }
+                //            notificationManager.removeAllScheduledNotifications()
+            }
         }
         
         if reset {
@@ -59,6 +70,9 @@ final class TimerLogic: ObservableObject {
         endDate = Date().addingTimeInterval(timeRemaining)
         connectTimer()
         state = .running
+        Task {
+            await notificationManager.scheduleNotification(time: endDate!)
+        }
     }
     
     private func connectTimer() {
@@ -75,7 +89,7 @@ final class TimerLogic: ObservableObject {
                 } else {
                     stop(reset: true)
                     timerFinishedSubject.send()
-                    print("Timer finished")
+                    print("Timer finished: \(Date())")
                 }
      
                 

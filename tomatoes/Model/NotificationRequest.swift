@@ -29,7 +29,7 @@ class NotificationRequest {
     
     func buildTrigger() -> UNNotificationTrigger {
         var dateComponents = DateComponents()
-        dateComponents = Calendar.current.dateComponents([.hour, .minute], from: self.time)
+        dateComponents = Calendar.current.dateComponents([.hour, .minute, .second], from: self.time)
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
         return trigger
     }
