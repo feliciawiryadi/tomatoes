@@ -45,12 +45,7 @@ final class TimerLogic: ObservableObject {
     func stop(reset: Bool = false) {
         if state == .running {
             disconnectTimer()
-            Task {
-                await notificationManager.currentCenter.pendingNotificationRequests().forEach { request in
-                    print("request found: \(request)")
-                }
-                //            notificationManager.removeAllScheduledNotifications()
-            }
+            notificationManager.removeAllScheduledNotifications()
         }
         
         if reset {
@@ -89,7 +84,7 @@ final class TimerLogic: ObservableObject {
                 } else {
                     stop(reset: true)
                     timerFinishedSubject.send()
-                    print("Timer finished: \(Date())")
+                    print("Timer finished")
                 }
      
                 

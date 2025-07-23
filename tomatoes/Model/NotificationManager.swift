@@ -13,7 +13,7 @@ class NotificationManager {
     func requestAuthorisationForNotifications() {
         currentCenter.requestAuthorization(options: [.alert, .sound]) { granted, _ in
             if granted {
-                print("Authorisation request granted")
+                print("Notification Authorisation request granted")
             }
         }
     }
@@ -22,7 +22,7 @@ class NotificationManager {
         let notification = NotificationRequest(time: time).getNotificationRequest()
         do {
             try await currentCenter.add(notification)
-            print("scheduled for: \(time)")
+            print("Notification scheduled for: \(time)")
         } catch {
             print(error)
         }

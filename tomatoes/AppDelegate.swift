@@ -58,8 +58,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         toggleWindowVisibility(
             location: NSPoint(x:windowX, y: windowY)
         )
-        
-        print("Status bar button clicked!  \(window!.isVisible)")
     }
     
     class KeyWindow: NSWindow {
@@ -99,12 +97,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         
         if window!.isVisible {
             window!.orderOut(nil)
-            print("window was visible, ordered out")
         } else {
             window!.makeKeyAndOrderFront(nil)
             window!.setFrameOrigin(location)
             NSApp.activate(ignoringOtherApps: true)
-            print("window was not visible, made key and ordered front")
         }
     }
     
