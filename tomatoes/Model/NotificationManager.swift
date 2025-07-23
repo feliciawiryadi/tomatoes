@@ -7,9 +7,25 @@
 
 import UserNotifications
 
-
-func requestAuthorisationForNotifications() {
-    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, _ in
-        print(granted)
+class NotificationManager {
+    var currentCenter = UNUserNotificationCenter.current()
+    
+    func requestAuthorisationForNotifications() {
+        currentCenter.requestAuthorization(options: [.alert, .sound]) { granted, _ in
+            print("Notification authorisation request granted")
+        }
     }
+    
+    func scheduleNotification(time: Date) async {
+        let notification = NotificationRequest(time: time).getNotificationRequest()
+        do {
+            try await currentCenter.add(notification)
+        } catch {
+            print(error)
+        }
+    }
+    
 }
+
+
+
