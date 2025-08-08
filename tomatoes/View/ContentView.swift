@@ -28,9 +28,9 @@ struct ContentView: View {
             HStack {
                 HStack {
                     Button(action: {
-                        timerLogic.duration = 10
-                        timerLogic.timeRemaining = 10
                         timerLogic.state = .idle
+                        timerLogic.mode = .focus
+                        timerLogic.updateDuration()
                     }) {
                         Text("25m")
                             .frame(width: 30)
@@ -39,9 +39,9 @@ struct ContentView: View {
                     Spacer()
                     
                     Button(action: {
-                        timerLogic.duration = 5
-                        timerLogic.timeRemaining = 5
                         timerLogic.state = .idle
+                        timerLogic.mode = .rest
+                        timerLogic.updateDuration()
 
                     }) {
                         Text("5m")
@@ -57,25 +57,25 @@ struct ContentView: View {
                     case .running:
                         Button(action: {
                         timerLogic.stop()
-                    }) {
-                        Text("stop")
-                            .frame(width: 50)
-                    }
-                case .idle:
-                    Button(action: {
-                        timerLogic.start()
-                    }) {
-                        Text("start")
-                            .frame(width: 50)
-                    }
-                    
-                case .paused:
-                    Button(action: {
-                        timerLogic.resume()
-                    }) {
-                        Text("resume")
-                            .frame(width: 50)
-                    }
+                        }) {
+                            Text("stop")
+                                .frame(width: 50)
+                        }
+                    case .idle:
+                        Button(action: {
+                            timerLogic.start()
+                        }) {
+                            Text("start")
+                                .frame(width: 50)
+                        }
+                        
+                    case .paused:
+                        Button(action: {
+                            timerLogic.resume()
+                        }) {
+                            Text("resume")
+                                .frame(width: 50)
+                        }
                     
                 }
                 
