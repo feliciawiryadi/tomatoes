@@ -16,13 +16,22 @@ class NotificationRequest {
         self.time = time
     }
     
-    func buildContent() -> UNMutableNotificationContent {
+    func buildContent(currentMode: TimerLogic.Mode, currentDuration: String) -> UNMutableNotificationContent {
         guard self.content == nil else {
             return self.content!
         }
         let content = UNMutableNotificationContent()
         content.title = "tomatoes"
-        content.body = "notification body"
+        
+        switch currentMode {
+            case .focus:
+                content.body = "you have focused for \(currentDuration) minutes"
+            case .rest:
+                content.body = "you have rested for \(currentDuration) minutes"
+            default:
+                content.body = ""
+        }
+        
         self.content = content
         return content
     }
@@ -34,8 +43,8 @@ class NotificationRequest {
         return trigger
     }
     
-    func getNotificationRequest() -> UNNotificationRequest {
-        let content = buildContent()
+    func getNotificationRequest(currentMode: TimerLogic.Mode, currentDuration: String) -> UNNotificationRequest {
+        let content = buildContent(currentMode: currentMode, currentDuration: currentDuration)
         let trigger = buildTrigger()
         return UNNotificationRequest(
             identifier: "tomatoes",
