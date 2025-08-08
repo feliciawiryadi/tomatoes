@@ -12,15 +12,28 @@ import Combine
 
 final class TimerLogic: ObservableObject {
     
+    // represents the current state of the timer
     enum State {
-        case idle
+        case idle // initial state, default state after previous timer is up/ reset
         case running
         case paused
     }
     
+    // represents the current type of timer, decides the duration of the timer
+    enum Mode {
+        case inactive
+        case focus
+        case rest
+    }
+    
     @Published var state: State = .idle
-    @Published var timeRemaining: TimeInterval = 0
-    @Published var duration: TimeInterval = 0
+    @Published var mode: Mode = .inactive
+    
+    // this is the only place to manually change the duration for each mode
+    final var focusDuration: TimeInterval = 10
+    final var restDuration: TimeInterval = 5
+    @Published private(set) var timeRemaining: TimeInterval = 0
+    @Published private(set) var duration: TimeInterval = 0
     
     private var endDate: Date?
     private var timerConnector: AnyCancellable?
@@ -29,6 +42,21 @@ final class TimerLogic: ObservableObject {
     private var timerFinishedSubject = PassthroughSubject<Void, Never>()
     var timerFinished: AnyPublisher<Void, Never> {
         timerFinishedSubject.eraseToAnyPublisher()
+    }
+    
+    // mainly used to update UI when user clicks on the mode but haven't started it yet
+    func updateDuration() {
+        switch mode {
+            case .focus:
+                duration = focusDuration
+                timeRemaining = focusDuration
+            case .rest:
+                duration = restDuration
+                timeRemaining = restDuration
+            default:
+                print("something else")
+                return
+        }
     }
     
     func start() {
@@ -52,6 +80,7 @@ final class TimerLogic: ObservableObject {
             timeRemaining = duration
             endDate = nil
             state = .idle
+            mode = .inactive
             print("Timer resetted")
         } else {
             state = .paused
@@ -71,7 +100,7 @@ final class TimerLogic: ObservableObject {
     }
     
     private func connectTimer() {
-        timerConnector = Timer.publish(every: 0.1, on: .main, in: .common)
+        timerConnector = Timer.publish(every: 0.5, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] currentDate in
                 guard let self, let endDate, state == .running else { return }
