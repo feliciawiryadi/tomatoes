@@ -65,7 +65,7 @@ final class TimerLogic: ObservableObject {
         connectTimer()
         state = .running
         Task {
-            let durationString = DateComponentsFormatter().string(from: duration)!
+            let durationString = DateComponentsFormatter().string(from: duration/60)!
             await notificationManager.scheduleNotification(time: endDate!, currentMode: mode, currentDuration: durationString)
         }
         
@@ -96,7 +96,7 @@ final class TimerLogic: ObservableObject {
         connectTimer()
         state = .running
         Task {
-            let durationString = DateComponentsFormatter().string(from: duration)!
+            let durationString = DateComponentsFormatter().string(from: duration/60)!
             await notificationManager.scheduleNotification(time: endDate!, currentMode: mode, currentDuration: durationString)
         }
     }

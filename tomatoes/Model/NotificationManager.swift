@@ -19,7 +19,7 @@ class NotificationManager {
     }
     
     func scheduleNotification(time: Date, currentMode: TimerLogic.Mode, currentDuration: String) async {
-        let notification = NotificationRequest(time: time).getNotificationRequest(currentMode: currentMode, currentDuration: currentDuration)
+        let notification = NotificationRequest(time: time, mode: currentMode, duration: currentDuration).getNotificationRequest()
         do {
             try await currentCenter.add(notification)
             print("Notification scheduled for: \(time)")
