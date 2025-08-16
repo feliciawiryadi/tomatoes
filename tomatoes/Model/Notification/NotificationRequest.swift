@@ -8,6 +8,11 @@
 import Foundation
 import UserNotifications
 
+/**
+ # Notification request
+ the object that is created for every notification
+ builds: the content (including the customised content.body), the trigger, and action for when the manager wants to schedule a new notification
+ */
 class NotificationRequest {
     private var time: Date
     private var content: UNMutableNotificationContent?
@@ -30,10 +35,12 @@ class NotificationRequest {
         switch self.currentMode {
         case .focus:
             content.body = "you have focused for \(self.currentDuration!) minutes"
+            content.categoryIdentifier = "focusModeCategory"
         case .rest:
             content.body = "you have rested for \(self.currentDuration!) minutes"
+            content.categoryIdentifier = "restModeCategory"
         default:
-            content.body = ""
+            content.body = "unknown mode?"
         }
         
         self.content = content
@@ -45,10 +52,6 @@ class NotificationRequest {
         dateComponents = Calendar.current.dateComponents([.hour, .minute, .second], from: self.time)
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
         return trigger
-    }
-    
-    func buildActions(currentMode: TimerLogic.Mode) {
-        
     }
     
     func getNotificationRequest() -> UNNotificationRequest {

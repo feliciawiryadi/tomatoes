@@ -7,7 +7,13 @@
 
 import UserNotifications
 
-class NotificationManager {
+/**
+ # Notification Manager
+ contains the UNUserNotificationCenter
+ schedules notifications
+ cancels/ remove scheduled notifications
+ */
+class NotificationManager {    
     var currentCenter = UNUserNotificationCenter.current()
     
     func requestAuthorisationForNotifications() {

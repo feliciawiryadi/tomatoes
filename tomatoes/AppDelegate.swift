@@ -14,6 +14,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     
     var statusBarItem: NSStatusItem?
     var window: NSWindow?
+    var timerLogic: TimerLogic = TimerLogic()
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -21,19 +22,51 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             button.action = #selector(statusBarButtonClicked(_:))
             button.target = self
             button.image = NSImage(named: NSImage.Name("timelapse"))!
+//            button.title = DateComponentsFormatter().string(from: TimerLogic().timeRemaining)!
+            // this was an attempt to show the remaining seconds on the menu bar
         }
         
         UNUserNotificationCenter.current().delegate = self
         NotificationManager().requestAuthorisationForNotifications()
+        registerCategories()
         
+    }
+    
+    func registerCategories() {
+        let startFocusAction = UNNotificationAction(identifier: "startFocusAction", title: "start focus", options: [])
+        let startRestAction = UNNotificationAction(identifier: "startRestAction", title: "start rest", options: [])
+        let inactiveAction = UNNotificationAction(identifier: "inactiveAction", title: "stop session", options: [])
+
+        let focusModeCategory = UNNotificationCategory(identifier: "focusModeCategory", actions: [startRestAction, inactiveAction], intentIdentifiers: [], options: .customDismissAction)
+        let restModeCategory = UNNotificationCategory(identifier: "restModeCategory", actions: [startFocusAction, inactiveAction], intentIdentifiers: [], options: .customDismissAction)
+        
+        UNUserNotificationCenter.current().setNotificationCategories([focusModeCategory, restModeCategory])
     }
     
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
-        willPresent notification: UNNotification,
-        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+//        willPresent notification: UNNotification,
+        didReceive response: UNNotificationResponse,
+//        notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        completionHandler([.sound, .banner])
+        switch response.actionIdentifier {
+            
+        case "startFocusAction":
+            timerLogic.mode = .focus
+            timerLogic.updateDuration()
+            timerLogic.start()
+            print("start focus action clicked")
+        case "startRestAction":
+            timerLogic.mode = .rest
+            timerLogic.updateDuration()
+            timerLogic.start()
+            print("start rest action clicked")
+        default:
+            print("inactive")
+        }
+//        completionHandler([.sound, .banner])
+        completionHandler()
     }
     
     @objc func statusBarButtonClicked(_ sender: NSStatusBarButton) {
@@ -82,9 +115,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             defer: false
         )
         
-        window!.contentView = NSHostingView(rootView: ContentView(timerLogic: TimerLogic()))
+        window!.contentView = NSHostingView(rootView: ContentView(timerLogic: timerLogic))
         window!.isReleasedWhenClosed = false
-        window!.collectionBehavior = [.canJoinAllSpaces]
+        window!.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         window!.level = .floating
         
         return window.unsafelyUnwrapped
