@@ -9,13 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     
-    init(timerLogic: TimerLogic) {
-        self.timerLogic = timerLogic
-    }
+//    init(timerLogic: TimerLogic) {
+//        self.timerLogic = timerLogic
+//    }
     
-    @ObservedObject var timerLogic: TimerLogic
-    
-    
+    @ObservedObject var timerLogic = TimerLogic.sharedTimerLogic
     
     var body: some View {
         VStack {
@@ -88,5 +86,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(timerLogic: TimerLogic())
+    ContentView()
+//    ContentView(timerLogic: TimerLogic())
 }

@@ -14,7 +14,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     
     var statusBarItem: NSStatusItem?
     var window: NSWindow?
-    var timerLogic: TimerLogic = TimerLogic()
+    var timerLogic = TimerLogic.sharedTimerLogic
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)

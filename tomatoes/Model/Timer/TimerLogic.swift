@@ -12,6 +12,8 @@ import Combine
 
 final class TimerLogic: ObservableObject {
     
+    static let sharedTimerLogic = TimerLogic()
+    
     // represents the current state of the timer
     enum State {
         case idle // initial state, default state after previous timer is up/ reset
